@@ -142,6 +142,20 @@ Cách 2: Chèn link ở thư mục Bootstrap đã tải về:
     <script src="./bootstrap-4.6.2-dist/js/bootstrap.bundle.min.js"></script>
     <script src="./bootstrap-4.6.2-dist/js/bootstrap.min.js"></script>
 
+THƯ VIỆN MỞ RỘNG:
+
+## https://github.com/lugolabs/circles
+
+## https://plyr.io/
+
+## https://owlcarousel2.github.io/OwlCarousel2/
+
+## https://fancyapps.com/docs/ui/fancybox/
+
+## https://masonry.desandro.com
+
+## https://www.chartjs.org/docs/latest/getting-started/
+
 #ICON
 
 - Chèn link source: <script src="https://kit.fontawesome.com/042e59ddf7.js" crossorigin="anonymous"></script>
