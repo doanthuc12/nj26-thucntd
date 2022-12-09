@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1,
+        "first name": "Anna",
+        "last name": "Lee",
+        "phone number": 12345678,
+        "address": "abc street",
+        "email": "1@gmail.com",
+        "birthday": "1/1/2001"
+    },
+    {
+        "id": 2,
+        "first name": "John",
+        "last name": "Brown",
+        "phone number": 123456780,
+        "address": "bhj street",
+        "email": "2@gmail.com",
+        "birthday": "2/2/2002"
+    },
+    {
+        "id": 3,
+        "first name": "Emma",
+        "last name": "Sweet",
+        "phone number": 123456789,
+        "address": "ksj street",
+        "email": "3@gmail.com",
+        "birthday": "3/3/2003"
+    },
+    {
+        "id": 4,
+        "first name": "Mary",
+        "last name": "Lee",
+        "phone number": 12345998,
+        "address": "oiu street",
+        "email": "4@gmail.com",
+        "birthday": "4/4/2004"
+    }
+]

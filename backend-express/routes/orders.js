@@ -2,19 +2,18 @@ var express = require("express");
 var router = express.Router();
 var fs = require("fs");
 
-const suppliers = require("../data/suppliers.json");
-const fileName = "./data/suppliers.json";
+const orders = require("../data/orders.json");
+const fileName = "./data/orders.json";
 
 /* GET*/
 router.get("/", function (req, res, next) {
-  res.send(suppliers);
+  res.send(orders);
 });
 
 //GET (MANY PARAMETERS)
-// "/:id/:name" --> tên của parameters
 router.get("/:id", function (req, res, next) {
   const { id } = req.params;
-  const found = suppliers.find((p) => {
+  const found = orders.find((p) => {
     return p.id == id;
   });
   if (!found) {
@@ -28,29 +27,29 @@ router.get("/:id", function (req, res, next) {
 router.post("/", function (req, res, next) {
   const data = req.body;
   console.log(data);
-  suppliers.push(data);
+  orders.push(data);
 
-  fs.writeFileSync(fileName, JSON.stringify(suppliers), function (err) {
+  fs.writeFileSync(fileName, JSON.stringify(orders), function (err) {
     if (err) {
       throw err;
     }
   });
-  res.status(201).json({ message: "Create suppliers is successful!" });
+  res.status(200).json({ message: "Create order is successful!" });
 });
 
 /* DELETE*/
 router.delete("/:id", function (req, res, next) {
   const { id } = req.params;
-  const found = suppliers.find((p) => {
+  const found = orders.find((p) => {
     return p.id == id;
   });
   if (!found) {
     return res.status(404).json({ message: "Not Found!" });
   }
-  const remainSuppliers = suppliers.filter((p) => {
+  const remainOrders = orders.filter((p) => {
     return p.id != id;
   });
-  fs.writeFileSync(fileName, JSON.stringify(remainSuppliers), function (err) {
+  fs.writeFileSync(fileName, JSON.stringify(remainOrders), function (err) {
     if (err) {
       throw err;
     }
@@ -65,7 +64,7 @@ router.patch("/:id", function (req, res, next) {
   console.log("Data", data);
 
   //tìm data để sửa
-  let found = products.find((p) => {
+  let found = orders.find((p) => {
     return p.id == id;
   });
 
@@ -77,13 +76,11 @@ router.patch("/:id", function (req, res, next) {
       }
     }
     //Save to file JSON
-    fs.writeFileSync(fileName, JSON.stringify(suppliers), function (err) {
+    fs.writeFileSync(fileName, JSON.stringify(orders), function (err) {
       if (err) throw err;
       console.log("Saved.");
     });
-    return res
-      .status(200)
-      .json({ message: "Updating supplier is successful." });
+    return res.status(200).json({ message: "Updating orders is successful." });
   }
 
   return res.sendStatus(404);
