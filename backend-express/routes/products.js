@@ -2,6 +2,8 @@ var express = require("express");
 var router = express.Router();
 var fs = require("fs");
 
+const nanoid = require("nanoid");
+
 const products = require("../data/products.json");
 const fileName = "./data/products.json";
 /* GET*/
@@ -30,6 +32,7 @@ router.post("/", function (req, res, next) {
   const data = req.body;
   console.log("Data", data);
   products.push(data);
+  data.id = nanoid();
 
   //WRITE
   //SAVE TO FILE JSON

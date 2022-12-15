@@ -227,3 +227,6 @@ ICON:
 Lệnh render file node:
 Ctrl + C --> cancel file đang chạy trc đó
 npm start
+
+//tránh console log data 2 lần
+File index.js --> Fragment

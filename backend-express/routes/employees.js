@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var fs = require("fs");
+const nanoid = require("nanoid");
 
 const employees = require("../data/employees.json");
 const fileName = "./data/employees.json";
@@ -28,6 +29,7 @@ router.post("/", function (req, res, next) {
   const data = req.body;
   console.log(data);
   employees.push(data);
+  data.id = nanoid();
 
   fs.writeFileSync(fileName, JSON.stringify(employees), function (err) {
     if (err) {

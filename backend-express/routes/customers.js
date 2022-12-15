@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var fs = require("fs");
+const nanoid = require("nanoid");
 
 const customers = require("../data/customers.json");
 const fileName = "./data/customers.json";
@@ -28,6 +29,7 @@ router.post("/", function (req, res, next) {
   const data = req.body;
   console.log(data);
   customers.push(data);
+  data.id = nanoid();
 
   fs.writeFileSync(fileName, JSON.stringify(customers), function (err) {
     if (err) {
@@ -70,10 +72,8 @@ router.patch("/:id", function (req, res, next) {
 
   if (found) {
     //cập nhập data gì?
-    for (let x in found) {
-      if (data[x]) {
-        found[x] = data[x];
-      }
+    for (let x in data) {
+      found[x] = data[x];
     }
     //Save to file JSON
     fs.writeFileSync(fileName, JSON.stringify(customers), function (err) {
