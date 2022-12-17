@@ -36,7 +36,7 @@ router.post("/", function (req, res, next) {
       throw err;
     }
   });
-  res.status(200).json({ message: "Create employee is successful!" });
+  res.status(201).json({ message: "Create employee is successful!" });
 });
 
 /* DELETE*/
@@ -48,9 +48,11 @@ router.delete("/:id", function (req, res, next) {
   if (!found) {
     return res.status(404).json({ message: "Not Found!" });
   }
-  const remainEmployees = employees.filter((p) => {
+  let remainEmployees = employees.filter((p) => {
     return p.id != id;
   });
+
+  // Save to file
   fs.writeFileSync(fileName, JSON.stringify(remainEmployees), function (err) {
     if (err) {
       throw err;
@@ -63,7 +65,7 @@ router.delete("/:id", function (req, res, next) {
 router.patch("/:id", function (req, res, next) {
   const { id } = req.params;
   const data = req.body;
-  console.log("Data", data);
+  console.log("Data =", data);
 
   //tìm data để sửa
   let found = employees.find((p) => {
@@ -83,10 +85,10 @@ router.patch("/:id", function (req, res, next) {
       console.log("Saved.");
     });
     return res
-      .status(200)
+      .sendStatus(200)
       .json({ message: "Updating employees is successful." });
   }
 
-  return res.sendStatus(404);
+  return res.sendStatus(404).json({ message: "not found" });
 });
 module.exports = router;

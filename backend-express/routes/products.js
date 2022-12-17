@@ -40,11 +40,9 @@ router.post("/", function (req, res, next) {
     if (err) {
       throw err;
     }
-    // console.log("Saved");
   });
 
-  res.status(201).json({ message: "Creating product is successful." });
-  // res.send("OK");
+  res.sendStatus(201).json({ message: "Creating product is successful." });
 });
 
 /* PATCH*/
@@ -70,10 +68,12 @@ router.patch("/:id", function (req, res, next) {
       if (err) throw err;
       console.log("Saved.");
     });
-    return res.status(200).json({ message: "Updating product is successful." });
+    return res
+      .sendStatus(200)
+      .json({ message: "Updating product is successful." });
   }
 
-  return res.sendStatus(404);
+  return res.status(404).json({ message: "not found" });
 });
 
 /* DELETE*/
@@ -86,7 +86,7 @@ router.delete("/:id", function (req, res, next) {
   if (!found) {
     return res.status(404).json({ message: "Not Found" });
   }
-  const remainProducts = products.filter((p) => {
+  let remainProducts = products.filter((p) => {
     return p.id != id;
   });
   //Save to file JSON

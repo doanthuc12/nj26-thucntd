@@ -27,7 +27,7 @@ router.get("/:id", function (req, res, next) {
 /* POST*/
 router.post("/", function (req, res, next) {
   const data = req.body;
-  console.log(data);
+  console.log("Data = ", data);
   categories.push(data);
   data.id = nanoid();
 
@@ -36,7 +36,7 @@ router.post("/", function (req, res, next) {
       throw err;
     }
   });
-  res.status(200).json({ message: "Create customer is successful!" });
+  res.sendStatus(201).json({ message: "Create customer is successful!" });
 });
 
 /* DELETE*/
@@ -48,7 +48,7 @@ router.delete("/:id", function (req, res, next) {
   if (!found) {
     return res.status(404).json({ message: "Not Found!" });
   }
-  const remainCategories = categories.filter((p) => {
+  let remainCategories = categories.filter((p) => {
     return p.id != id;
   });
   fs.writeFileSync(fileName, JSON.stringify(remainCategories), function (err) {
@@ -56,14 +56,14 @@ router.delete("/:id", function (req, res, next) {
       throw err;
     }
   });
-  res.status(200).json({ message: "Delete successful!" });
+  res.sendStatus(200).json({ message: "Delete successful!" });
 });
 
 /* PATCH*/
 router.patch("/:id", function (req, res, next) {
   const { id } = req.params;
   const data = req.body;
-  console.log("Data", data);
+  console.log("Data =", data);
 
   //tìm data để sửa
   let found = categories.find((p) => {
@@ -81,11 +81,11 @@ router.patch("/:id", function (req, res, next) {
       console.log("Saved.");
     });
     return res
-      .status(200)
+      .sendStatus(200)
       .json({ message: "Updating categories is successful." });
   }
 
-  return res.sendStatus(404);
+  return res.status(404).json({ message: "not found" });
 });
 
 module.exports = router;

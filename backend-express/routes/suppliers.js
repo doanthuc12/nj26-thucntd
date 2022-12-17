@@ -35,7 +35,7 @@ router.post("/", function (req, res, next) {
       throw err;
     }
   });
-  res.status(201).json({ message: "Create suppliers is successful!" });
+  res.sendStatus(201).json({ message: "Create suppliers is successful!" });
 });
 
 /* DELETE*/
@@ -47,7 +47,7 @@ router.delete("/:id", function (req, res, next) {
   if (!found) {
     return res.status(404).json({ message: "Not Found!" });
   }
-  const remainSuppliers = suppliers.filter((p) => {
+  let remainSuppliers = suppliers.filter((p) => {
     return p.id != id;
   });
   fs.writeFileSync(fileName, JSON.stringify(remainSuppliers), function (err) {
@@ -55,7 +55,7 @@ router.delete("/:id", function (req, res, next) {
       throw err;
     }
   });
-  res.status(200).json({ message: "Delete successful!" });
+  res.sendStatus(200).json({ message: "Delete successful!" });
 });
 
 /* PATCH*/
@@ -82,10 +82,10 @@ router.patch("/:id", function (req, res, next) {
       console.log("Saved.");
     });
     return res
-      .status(200)
+      .sendStatus(200)
       .json({ message: "Updating supplier is successful." });
   }
 
-  return res.sendStatus(404);
+  return res.status(404).json({ message: "not found" });
 });
 module.exports = router;
