@@ -230,3 +230,6 @@ npm start
 
 //tránh console log data 2 lần
 File index.js --> Fragment
+
+// Mongoose Datatypes:
+// https://mongoosejs.com/docs/schematypes.html
