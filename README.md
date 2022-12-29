@@ -20,6 +20,7 @@ RN26
 - Bracket Pair Colorizer 2
 - Color Highlight
 - Dracula Official (theme)
+- Dark Molokai Theme
 
 ## Session 02 - Practice & Homeworks
 

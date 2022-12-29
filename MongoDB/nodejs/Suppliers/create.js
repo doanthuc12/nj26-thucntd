@@ -5,9 +5,9 @@ mongoose.connect("mongodb://127.0.0.1:27017/thucntd");
 
 try {
   const data = {
-    name: "Xiaomi",
-    email: "xiaomi@gmail.com",
-    address: "3 ABC Street, America",
+    name: "3CE",
+    email: "3ce@gmail.com",
+    address: "4 ABC Street, Japan",
   };
 
   const newItem = new Supplier(data);

@@ -5,10 +5,12 @@ mongoose.connect("mongodb://127.0.0.1:27017/thucntd");
 
 try {
   const data = {
-    name: "SSD",
-    price: 450,
-    discount: 70,
-    stock: 15,
+    name: "Cushion",
+    price: 400,
+    discount: 25,
+    stock: 10,
+    categoryId: "63ac115f3216ef8827ffd43a",
+    supplierId: "63ac133a60c1527297f952bd",
   };
 
   const newItem = new Product(data);

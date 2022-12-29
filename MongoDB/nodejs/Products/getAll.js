@@ -5,9 +5,12 @@ const { Product } = require("../models");
 mongoose.connect("mongodb://127.0.0.1:27017/thucntd");
 
 try {
-  Product.find().then((result) => {
-    console.log(result);
-  });
+  Product.find({})
+    .populate("category")
+    .populate("supplier")
+    .then((result) => {
+      console.log(result);
+    });
 } catch (err) {
   console.log(err);
 }

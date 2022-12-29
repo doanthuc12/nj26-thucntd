@@ -5,7 +5,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/thucntd");
 
 try {
   const data = {
-    name: "Điện lạnh",
+    name: "Mỹ phẩm",
     description: "Mô tả ...",
   };
 
