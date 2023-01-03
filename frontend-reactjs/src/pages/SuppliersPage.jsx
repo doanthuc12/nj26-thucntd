@@ -3,13 +3,13 @@ import axios from "axios";
 import { Form, Input, Button, Modal, Space, Table, Popconfirm } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-function CustomerPage() {
+function SuppliersPage() {
   //Call API
-  const [customers, setCustomers] = React.useState([]);
+  const [suppliers, setSuppliers] = React.useState([]);
 
   //Select customer
   const [editModalVisible, setEditModalVisible] = React.useState(false);
-  const [selectedCustomer, setSelectedCustomer] = React.useState(null);
+  const [selectedSupplier, setSelectedSupplier] = React.useState(null);
 
   //Refresh
   const [refresh, setRefresh] = React.useState(0);
@@ -29,22 +29,15 @@ function CustomerPage() {
       },
     },
     {
-      title: "Họ và tên",
-      key: "fullName",
+      title: "Nhà cung cấp",
+      key: "name",
       render: (text, record, index) => {
         return (
           <div>
-            <span>
-              {record.firstName} {record.lastName}
-            </span>
+            <span>{record.name}</span>
           </div>
         );
       },
-    },
-    {
-      title: "Số điện thoại",
-      dataIndex: "phoneNumber",
-      key: "phoneNumber",
     },
     {
       title: "Địa chỉ",
@@ -57,15 +50,9 @@ function CustomerPage() {
       key: "email",
     },
     {
-      title: "Ngày sinh (yyyy/mm/dd)",
-      key: "birthday",
-      render: (text, record, index) => {
-        return (
-          <div>
-            <span>{record.birthday}</span>
-          </div>
-        );
-      },
+      title: "Số điện thoại",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
     },
     {
       title: "",
@@ -76,12 +63,12 @@ function CustomerPage() {
           <Space>
             <Popconfirm
               style={{ width: 1000 }}
-              title="Bạn muốn xoá khách hàng này?"
-              description="Bạn muốn xoá khách hàng này?"
+              title="Bạn muốn xoá nhà cung cấp này?"
+              description="Bạn muốn xoá nhà cung cấp này?"
               okText="Đồng ý"
               cancelText="Đóng"
               onConfirm={() => {
-                deleteCustomers(record._id);
+                deleteSuppliers(record._id);
               }}
             >
               <Button danger type="dashed" icon={<DeleteOutlined />} />
@@ -89,28 +76,18 @@ function CustomerPage() {
             <Button
               type="dashed"
               icon={<EditOutlined />}
-              onClick={() => selectCustomers(record)}
+              onClick={() => selectSuppliers(record)}
             ></Button>
           </Space>
         );
       },
     },
   ];
-  //Phone Number
-  // const { Option } = Select;
-  // const prefixSelector = (
-  //   <Form.Item name="prefix" noStyle>
-  //     <Select style={{ width: 70 }}>
-  //       <Option value="84">+84</Option>
-  //       <Option value="87">+87</Option>
-  //     </Select>
-  //   </Form.Item>
-  // );
 
   React.useEffect(() => {
-    axios.get("http://localhost:9000/customers").then((response) => {
+    axios.get("http://localhost:9000/suppliers").then((response) => {
       // console.log(response.data);
-      setCustomers(response.data);
+      setSuppliers(response.data);
     });
   }, [refresh]);
 
@@ -118,7 +95,7 @@ function CustomerPage() {
     console.log(values);
 
     //CALL API TO CREATE CUSTOMER
-    axios.post("http://localhost:9000/customers", values).then((response) => {
+    axios.post("http://localhost:9000/suppliers", values).then((response) => {
       if (response.status === 201) {
         createForm.resetFields();
         setRefresh((f) => f + 1);
@@ -132,7 +109,7 @@ function CustomerPage() {
 
     //CALL API TO CREATE CUSTOMER
     axios
-      .patch("http://localhost:9000/customers/" + selectedCustomer.id, values)
+      .patch("http://localhost:9000/suppliers/" + selectedSupplier._id, values)
       .then((response) => {
         if (response.status === 200) {
           updateForm.resetFields();
@@ -142,15 +119,15 @@ function CustomerPage() {
       });
   };
 
-  const selectCustomers = (data) => {
+  const selectSuppliers = (data) => {
     setEditModalVisible(true);
-    setSelectedCustomer(data);
+    setSelectedSupplier(data);
     updateForm.setFieldsValue(data);
     console.log(data);
   };
 
-  const deleteCustomers = (id) => {
-    axios.delete("http://localhost:9000/customers/" + id).then((response) => {
+  const deleteSuppliers = (id) => {
+    axios.delete("http://localhost:9000/suppliers/" + id).then((response) => {
       console.log(response);
       if (response.status === 200) {
         setRefresh((f) => f + 1);
@@ -165,7 +142,7 @@ function CustomerPage() {
     <div>
       <Form
         form={createForm}
-        name="create-customer"
+        name="create-supplier"
         labelCol={{
           span: 8,
         }}
@@ -174,28 +151,14 @@ function CustomerPage() {
         }}
         onFinish={onFinish}
       >
-        {/* LAST NAME */}
+        {/* NAME */}
         <Form.Item
-          label="Tên"
-          name="lastName"
+          label="Nhà cung cấp"
+          name="name"
           rules={[
             {
               required: true,
-              message: "Please input your lastname!",
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-
-        {/* FIRST NAME */}
-        <Form.Item
-          label="Họ"
-          name="firstName"
-          rules={[
-            {
-              required: true,
-              message: "Please input your firstname!",
+              message: "Please input supplier!",
             },
           ]}
         >
@@ -241,24 +204,7 @@ function CustomerPage() {
           rules={[
             {
               type: "text",
-              required: true,
-              message: "Please input your phone number!",
-            },
-          ]}
-        >
-          <Input />
-          {/* <InputNumber addonBefore={prefixSelector} style={{ width: "100%" }} /> */}
-        </Form.Item>
-
-        {/* BIRTHDAY */}
-        <Form.Item
-          label="Ngày sinh (mm/dd/yyyy)"
-          name="birthday"
-          rules={[
-            {
-              type: "text",
-              required: true,
-              message: "Please input your birthday!",
+              required: false,
             },
           ]}
         >
@@ -280,7 +226,7 @@ function CustomerPage() {
 
       {/* TABLE */}
       <Table
-        dataSource={customers}
+        dataSource={suppliers}
         columns={columns}
         pagination={false}
         rowKey="id"
@@ -312,28 +258,14 @@ function CustomerPage() {
           }}
           onFinish={onEditFinish}
         >
-          {/* LAST NAME */}
+          {/* NAME */}
           <Form.Item
-            label="Tên"
-            name="lastName"
+            label="Nhà cung cấp"
+            name="name"
             rules={[
               {
                 required: true,
-                message: "Please input your lastname!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          {/* FIRST NAME */}
-          <Form.Item
-            label="Họ"
-            name="firstName"
-            rules={[
-              {
-                required: true,
-                message: "Please input your firstname!",
+                message: "Please input supplier!",
               },
             ]}
           >
@@ -358,25 +290,6 @@ function CustomerPage() {
             <Input />
           </Form.Item>
 
-          {/* PHONE NUMBER */}
-          <Form.Item
-            label="Số điện thoại"
-            name="phoneNumber"
-            rules={[
-              {
-                type: "text",
-                required: true,
-                message: "Please input your phone number!",
-              },
-            ]}
-          >
-            {/* <InputNumber
-              addonBefore={prefixSelector}
-              style={{ width: "100%" }}
-            /> */}
-            <Input />
-          </Form.Item>
-
           {/* ADDRESS */}
           <Form.Item
             label="Địa chỉ"
@@ -390,21 +303,16 @@ function CustomerPage() {
             ]}
           >
             <Input />
-            {/* <InputNumber
-              addonBefore={prefixSelector}
-              style={{ width: "100%" }}
-            /> */}
           </Form.Item>
 
-          {/* BIRTHDAY */}
+          {/* PHONE NUMBER */}
           <Form.Item
-            label="Ngày sinh"
-            name="birthday"
+            label="Số điện thoại"
+            name="phoneNumber"
             rules={[
               {
                 type: "text",
-                required: true,
-                message: "Please input your birthday!",
+                required: false,
               },
             ]}
           >
@@ -416,4 +324,4 @@ function CustomerPage() {
   );
 }
 
-export default CustomerPage;
+export default SuppliersPage;

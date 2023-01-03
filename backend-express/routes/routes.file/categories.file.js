@@ -3,18 +3,18 @@ var router = express.Router();
 var fs = require("fs");
 const nanoid = require("nanoid");
 
-const customers = require("../data/customers.json");
-const fileName = "./data/customers.json";
+const categories = require("../../data/categories.json");
+const fileName = "./data/categories.json";
 
-/* GET*/
+//* GET*/
 router.get("/", function (req, res, next) {
-  res.send(customers);
+  res.send(categories);
 });
 
 //GET (MANY PARAMETERS)
 router.get("/:id", function (req, res, next) {
   const { id } = req.params;
-  const found = customers.find((p) => {
+  const found = categories.find((p) => {
     return p.id == id;
   });
   if (!found) {
@@ -27,11 +27,11 @@ router.get("/:id", function (req, res, next) {
 /* POST*/
 router.post("/", function (req, res, next) {
   const data = req.body;
-  console.log(data);
-  customers.push(data);
+  console.log("Data = ", data);
+  categories.push(data);
   data.id = nanoid();
 
-  fs.writeFileSync(fileName, JSON.stringify(customers), function (err) {
+  fs.writeFileSync(fileName, JSON.stringify(categories), function (err) {
     if (err) {
       throw err;
     }
@@ -42,16 +42,16 @@ router.post("/", function (req, res, next) {
 /* DELETE*/
 router.delete("/:id", function (req, res, next) {
   const { id } = req.params;
-  const found = customers.find((p) => {
+  const found = categories.find((p) => {
     return p.id == id;
   });
   if (!found) {
     return res.status(404).json({ message: "Not Found!" });
   }
-  let remainCustomers = customers.filter((p) => {
+  let remainCategories = categories.filter((p) => {
     return p.id != id;
   });
-  fs.writeFileSync(fileName, JSON.stringify(remainCustomers), function (err) {
+  fs.writeFileSync(fileName, JSON.stringify(remainCategories), function (err) {
     if (err) {
       throw err;
     }
@@ -63,10 +63,10 @@ router.delete("/:id", function (req, res, next) {
 router.patch("/:id", function (req, res, next) {
   const { id } = req.params;
   const data = req.body;
-  console.log("Data", data);
+  console.log("Data =", data);
 
   //tìm data để sửa
-  let found = customers.find((p) => {
+  let found = categories.find((p) => {
     return p.id == id;
   });
 
@@ -76,15 +76,16 @@ router.patch("/:id", function (req, res, next) {
       found[x] = data[x];
     }
     //Save to file JSON
-    fs.writeFileSync(fileName, JSON.stringify(customers), function (err) {
+    fs.writeFileSync(fileName, JSON.stringify(categories), function (err) {
       if (err) throw err;
       console.log("Saved.");
     });
     return res
       .sendStatus(200)
-      .json({ message: "Updating customers is successful." });
+      .json({ message: "Updating categories is successful." });
   }
 
   return res.status(404).json({ message: "not found" });
 });
+
 module.exports = router;

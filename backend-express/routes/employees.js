@@ -1,94 +1,154 @@
+const { default: mongoose } = require("mongoose");
+
+const { Employee } = require("../models");
+// MONGOOSE
+mongoose.connect("mongodb://127.0.0.1:27017/thucntd");
+
 var express = require("express");
 var router = express.Router();
-var fs = require("fs");
-const nanoid = require("nanoid");
 
-const employees = require("../data/employees.json");
-const fileName = "./data/employees.json";
-
-/* GET*/
+// GET
 router.get("/", function (req, res, next) {
-  res.send(employees);
+  try {
+    Employee.find()
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
+  }
 });
 
-//GET (MANY PARAMETERS)
+// GET:id
 router.get("/:id", function (req, res, next) {
-  const { id } = req.params;
-  const found = employees.find((p) => {
-    return p.id == id;
-  });
-  if (!found) {
-    return res.status(404).json({ message: "Not Found!" });
+  try {
+    const { id } = req.params;
+    Employee.findById(id)
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
   }
-  console.log("id", id);
-  res.send(found);
 });
 
-/* POST*/
+// POST
 router.post("/", function (req, res, next) {
-  const data = req.body;
-  console.log(data);
-  employees.push(data);
-  data.id = nanoid();
+  try {
+    const data = req.body;
 
-  fs.writeFileSync(fileName, JSON.stringify(employees), function (err) {
-    if (err) {
-      throw err;
-    }
-  });
-  res.status(201).json({ message: "Create employee is successful!" });
-});
-
-/* DELETE*/
-router.delete("/:id", function (req, res, next) {
-  const { id } = req.params;
-  const found = employees.find((p) => {
-    return p.id == id;
-  });
-  if (!found) {
-    return res.status(404).json({ message: "Not Found!" });
+    const newItem = new Employee(data);
+    newItem
+      .save()
+      .then((result) => {
+        res.status(201).send(result);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
   }
-  let remainEmployees = employees.filter((p) => {
-    return p.id != id;
-  });
-
-  // Save to file
-  fs.writeFileSync(fileName, JSON.stringify(remainEmployees), function (err) {
-    if (err) {
-      throw err;
-    }
-  });
-  res.status(200).json({ message: "Delete successful!" });
 });
 
-/* PATCH*/
+// PATCH/:id
 router.patch("/:id", function (req, res, next) {
-  const { id } = req.params;
-  const data = req.body;
-  console.log("Data =", data);
+  try {
+    const { id } = req.params;
+    const data = req.body;
 
-  //tìm data để sửa
-  let found = employees.find((p) => {
-    return p.id == id;
-  });
-
-  if (found) {
-    //cập nhập data gì?
-    for (let x in found) {
-      if (data[x]) {
-        found[x] = data[x];
-      }
-    }
-    //Save to file JSON
-    fs.writeFileSync(fileName, JSON.stringify(employees), function (err) {
-      if (err) throw err;
-      console.log("Saved.");
-    });
-    return res
-      .sendStatus(200)
-      .json({ message: "Updating employees is successful." });
+    Employee.findByIdAndUpdate(id, data, {
+      new: true,
+    })
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (error) {
+    res.sendStatus(500);
   }
-
-  return res.sendStatus(404).json({ message: "not found" });
 });
+
+// DELETE
+router.delete("/:id", function (req, res, next) {
+  try {
+    const { id } = req.params;
+    Employee.findByIdAndDelete(id)
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+// ------------------------------------------------------------------------------------------------
+// QUESTIONS 4
+// ------------------------------------------------------------------------------------------------
+// router.get("/questions/4", function (req, res) {
+//   const text = "Thanh Khe";
+//   const query = { address: new RegExp(`${text}`) };
+
+//   findDocuments({ query }, "Employees")
+//     .then((result) => {
+//       res.json(result);
+//     })
+//     .catch((error) => {
+//       res.status(500).json(error);
+//     });
+// });
+
+// // ------------------------------------------------------------------------------------------------
+// // QUESTIONS 5
+// // ------------------------------------------------------------------------------------------------
+// router.get("/questions/5", function (req, res) {
+//   const query = {
+//     $expr: {
+//       $eq: [{ $year: "$birthday" }, 1990],
+//     },
+//   };
+
+//   findDocuments({ query }, "Employees")
+//     .then((result) => {
+//       res.json(result);
+//     })
+//     .catch((error) => {
+//       res.status(500).json(error);
+//     });
+// });
+
+// // ------------------------------------------------------------------------------------------------
+// // QUESTIONS 6
+// // ------------------------------------------------------------------------------------------------
+// router.get("/questions/6", function (req, res) {
+//   const today = new Date();
+//   const eqDay = { $eq: [{ $dayOfMonth: "$birthday" }, { $dayOfMonth: today }] };
+//   const eqMonth = { $eq: [{ $month: "$birthday" }, { $month: today }] };
+
+//   const query = {
+//     $expr: {
+//       $and: [eqDay, eqMonth],
+//     },
+//   };
+
+//   findDocuments({ query }, "Employees")
+//     .then((result) => {
+//       res.json(result);
+//     })
+//     .catch((error) => {
+//       res.status(500).json(error);
+//     });
+// });
 module.exports = router;

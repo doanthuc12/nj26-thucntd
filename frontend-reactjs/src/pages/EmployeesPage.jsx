@@ -7,9 +7,10 @@ import {
   Modal,
   Space,
   Table,
-  Select,
-  InputNumber,
+  DatePicker,
+  Popconfirm,
 } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 function EmployeesPage() {
   //Call API
@@ -26,7 +27,7 @@ function EmployeesPage() {
   const columns = [
     {
       title: "STT",
-      key: "",
+      key: "no",
       width: "1%",
       render: (text, record, index) => {
         return (
@@ -37,7 +38,7 @@ function EmployeesPage() {
       },
     },
     {
-      title: "Họ và tên",
+      title: "Họ và tên nhân viên",
       key: "fullName",
       render: (text, record, index) => {
         return (
@@ -50,14 +51,30 @@ function EmployeesPage() {
       },
     },
     {
+      title: "Số điện thoại",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
+    },
+    {
+      title: "Địa chỉ",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
       title: "Thư điện tử",
       dataIndex: "email",
       key: "email",
     },
     {
-      title: "Số điện thoại",
-      dataIndex: "phoneNumber",
-      key: "phoneNumber",
+      title: "Ngày sinh (yyyy/mm/dd)",
+      key: "birthday",
+      render: (text, record, index) => {
+        return (
+          <div>
+            <span>{record.birthday}</span>
+          </div>
+        );
+      },
     },
     {
       title: "",
@@ -66,8 +83,23 @@ function EmployeesPage() {
       render: (text, record, index) => {
         return (
           <Space>
-            <Button onClick={() => deleteEmployees(record.id)}>Xoá</Button>
-            <Button onClick={() => selectEmployees(record)}>Sửa</Button>
+            <Popconfirm
+              style={{ width: 1000 }}
+              title="Bạn muốn xoá khách hàng này?"
+              description="Bạn muốn xoá khách hàng này?"
+              okText="Đồng ý"
+              cancelText="Đóng"
+              onConfirm={() => {
+                deleteEmployees(record._id);
+              }}
+            >
+              <Button danger type="dashed" icon={<DeleteOutlined />} />
+            </Popconfirm>
+            <Button
+              type="dashed"
+              icon={<EditOutlined />}
+              onClick={() => selectEmployees(record)}
+            ></Button>
           </Space>
         );
       },
@@ -75,15 +107,16 @@ function EmployeesPage() {
   ];
 
   //Phone Number
-  const { Option } = Select;
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <Select style={{ width: 70 }}>
-        <Option value="84">+84</Option>
-        <Option value="87">+87</Option>
-      </Select>
-    </Form.Item>
-  );
+  // const { Option } = Select;
+  // const prefixSelector = (
+  //   <Form.Item name="prefix" noStyle>
+  //     <Select style={{ width: 70 }}>
+  //       <Option value="84">+84</Option>
+  //       <Option value="87">+87</Option>
+  //     </Select>
+  //   </Form.Item>
+  // );
+
   React.useEffect(() => {
     axios.get("http://localhost:9000/employees").then((response) => {
       // console.log(response.data);
@@ -142,7 +175,7 @@ function EmployeesPage() {
     <div>
       <Form
         form={createForm}
-        name="create-employees"
+        name="create-customer"
         labelCol={{
           span: 8,
         }}
@@ -153,7 +186,7 @@ function EmployeesPage() {
       >
         {/* LAST NAME */}
         <Form.Item
-          label="Last Name"
+          label="Tên"
           name="lastName"
           rules={[
             {
@@ -167,7 +200,7 @@ function EmployeesPage() {
 
         {/* FIRST NAME */}
         <Form.Item
-          label="First Name"
+          label="Họ"
           name="firstName"
           rules={[
             {
@@ -181,7 +214,7 @@ function EmployeesPage() {
 
         {/* EMAIL */}
         <Form.Item
-          label="Email"
+          label="Thư điện tử"
           name="email"
           rules={[
             {
@@ -197,19 +230,62 @@ function EmployeesPage() {
           <Input />
         </Form.Item>
 
+        {/* ADDRESS */}
+        <Form.Item
+          label="Địa chỉ"
+          name="address"
+          rules={[
+            {
+              required: true,
+              message: "Please input your address!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
         {/* PHONE NUMBER */}
         <Form.Item
-          label="Phone Number"
+          label="Số điện thoại"
           name="phoneNumber"
           rules={[
             {
-              type: "number",
+              type: "text",
               required: true,
               message: "Please input your phone number!",
             },
           ]}
         >
-          <InputNumber addonBefore={prefixSelector} style={{ width: "100%" }} />
+          <Input />
+          {/* <InputNumber addonBefore={prefixSelector} style={{ width: "100%" }} /> */}
+        </Form.Item>
+
+        {/* BIRTHDAY */}
+        {/* <Form.Item
+          label="Ngày sinh (mm/dd/yyyy)"
+          name="birthday"
+          rules={[
+            {
+              type: "text",
+              required: true,
+              message: "Please input your birthday!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item> */}
+
+        <Form.Item
+          label="Ngày sinh"
+          name="birthday"
+          rules={[
+            {
+              required: true,
+              message: "Please choose your birthday!",
+            },
+          ]}
+        >
+          <DatePicker />
         </Form.Item>
 
         {/* SUBMIT */}
@@ -237,7 +313,7 @@ function EmployeesPage() {
       <Modal
         open={editModalVisible}
         centered
-        title="Update information"
+        title="Cập nhật thông tin"
         onCancel={() => {
           setEditModalVisible(false);
         }}
@@ -250,7 +326,7 @@ function EmployeesPage() {
       >
         <Form
           form={updateForm}
-          name="updateEmployees"
+          name="updateCustomers"
           labelCol={{
             span: 8,
           }}
@@ -261,7 +337,7 @@ function EmployeesPage() {
         >
           {/* LAST NAME */}
           <Form.Item
-            label="Last Name"
+            label="Tên"
             name="lastName"
             rules={[
               {
@@ -275,7 +351,7 @@ function EmployeesPage() {
 
           {/* FIRST NAME */}
           <Form.Item
-            label="First Name"
+            label="Họ"
             name="firstName"
             rules={[
               {
@@ -286,8 +362,10 @@ function EmployeesPage() {
           >
             <Input />
           </Form.Item>
+
+          {/* EMAIL */}
           <Form.Item
-            label="Email"
+            label="Thư điện tử"
             name="email"
             rules={[
               {
@@ -302,21 +380,57 @@ function EmployeesPage() {
           >
             <Input />
           </Form.Item>
+
+          {/* PHONE NUMBER */}
           <Form.Item
-            label="Phone Number"
+            label="Số điện thoại"
             name="phoneNumber"
             rules={[
               {
-                type: "number",
+                type: "text",
                 required: true,
                 message: "Please input your phone number!",
               },
             ]}
           >
-            <InputNumber
+            {/* <InputNumber
               addonBefore={prefixSelector}
               style={{ width: "100%" }}
-            />
+            /> */}
+            <Input />
+          </Form.Item>
+
+          {/* ADDRESS */}
+          <Form.Item
+            label="Địa chỉ"
+            name="address"
+            rules={[
+              {
+                type: "text",
+                required: true,
+                message: "Please input your address!",
+              },
+            ]}
+          >
+            <Input />
+            {/* <InputNumber
+              addonBefore={prefixSelector}
+              style={{ width: "100%" }}
+            /> */}
+          </Form.Item>
+
+          {/* BIRTHDAY */}
+          <Form.Item
+            label="Ngày sinh"
+            name="birthday"
+            rules={[
+              {
+                required: true,
+                message: "Please input your birthday!",
+              },
+            ]}
+          >
+            <DatePicker />
           </Form.Item>
         </Form>
       </Modal>

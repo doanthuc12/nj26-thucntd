@@ -1,91 +1,154 @@
+const { default: mongoose } = require("mongoose");
+
+const { Category } = require("../models");
+// MONGOOSE
+mongoose.connect("mongodb://127.0.0.1:27017/thucntd");
+
 var express = require("express");
 var router = express.Router();
-var fs = require("fs");
-const nanoid = require("nanoid");
 
-const categories = require("../data/categories.json");
-const fileName = "./data/categories.json";
-
-//* GET*/
+// GET
 router.get("/", function (req, res, next) {
-  res.send(categories);
+  try {
+    Category.find()
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
+  }
 });
 
-//GET (MANY PARAMETERS)
+// GET:id
 router.get("/:id", function (req, res, next) {
-  const { id } = req.params;
-  const found = categories.find((p) => {
-    return p.id == id;
-  });
-  if (!found) {
-    return res.status(404).json({ message: "Not Found!" });
+  try {
+    const { id } = req.params;
+    Category.findById(id)
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
   }
-  console.log("id", id);
-  res.send(found);
 });
 
-/* POST*/
+// POST
 router.post("/", function (req, res, next) {
-  const data = req.body;
-  console.log("Data = ", data);
-  categories.push(data);
-  data.id = nanoid();
+  try {
+    const data = req.body;
 
-  fs.writeFileSync(fileName, JSON.stringify(categories), function (err) {
-    if (err) {
-      throw err;
-    }
-  });
-  res.sendStatus(201).json({ message: "Create customer is successful!" });
-});
-
-/* DELETE*/
-router.delete("/:id", function (req, res, next) {
-  const { id } = req.params;
-  const found = categories.find((p) => {
-    return p.id == id;
-  });
-  if (!found) {
-    return res.status(404).json({ message: "Not Found!" });
+    const newItem = new Category(data);
+    newItem
+      .save()
+      .then((result) => {
+        res.status(201).send(result);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
   }
-  let remainCategories = categories.filter((p) => {
-    return p.id != id;
-  });
-  fs.writeFileSync(fileName, JSON.stringify(remainCategories), function (err) {
-    if (err) {
-      throw err;
-    }
-  });
-  res.sendStatus(200).json({ message: "Delete successful!" });
 });
 
-/* PATCH*/
+// PATCH/:id
 router.patch("/:id", function (req, res, next) {
-  const { id } = req.params;
-  const data = req.body;
-  console.log("Data =", data);
+  try {
+    const { id } = req.params;
+    const data = req.body;
 
-  //tìm data để sửa
-  let found = categories.find((p) => {
-    return p.id == id;
-  });
-
-  if (found) {
-    //cập nhập data gì?
-    for (let x in data) {
-      found[x] = data[x];
-    }
-    //Save to file JSON
-    fs.writeFileSync(fileName, JSON.stringify(categories), function (err) {
-      if (err) throw err;
-      console.log("Saved.");
-    });
-    return res
-      .sendStatus(200)
-      .json({ message: "Updating categories is successful." });
+    Category.findByIdAndUpdate(id, data, {
+      new: true,
+    })
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (error) {
+    res.sendStatus(500);
   }
-
-  return res.status(404).json({ message: "not found" });
 });
 
+// DELETE
+router.delete("/:id", function (req, res, next) {
+  try {
+    const { id } = req.params;
+    Category.findByIdAndDelete(id)
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
+
+// ------------------------------------------------------------------------------------------------
+// QUESTIONS 4
+// ------------------------------------------------------------------------------------------------
+// router.get("/questions/4", function (req, res) {
+//   const text = "Thanh Khe";
+//   const query = { address: new RegExp(`${text}`) };
+
+//   findDocuments({ query }, "categories")
+//     .then((result) => {
+//       res.json(result);
+//     })
+//     .catch((error) => {
+//       res.status(500).json(error);
+//     });
+// });
+
+// // ------------------------------------------------------------------------------------------------
+// // QUESTIONS 5
+// // ------------------------------------------------------------------------------------------------
+// router.get("/questions/5", function (req, res) {
+//   const query = {
+//     $expr: {
+//       $eq: [{ $year: "$birthday" }, 1990],
+//     },
+//   };
+
+//   findDocuments({ query }, "categories")
+//     .then((result) => {
+//       res.json(result);
+//     })
+//     .catch((error) => {
+//       res.status(500).json(error);
+//     });
+// });
+
+// // ------------------------------------------------------------------------------------------------
+// // QUESTIONS 6
+// // ------------------------------------------------------------------------------------------------
+// router.get("/questions/6", function (req, res) {
+//   const today = new Date();
+//   const eqDay = { $eq: [{ $dayOfMonth: "$birthday" }, { $dayOfMonth: today }] };
+//   const eqMonth = { $eq: [{ $month: "$birthday" }, { $month: today }] };
+
+//   const query = {
+//     $expr: {
+//       $and: [eqDay, eqMonth],
+//     },
+//   };
+
+//   findDocuments({ query }, "categories")
+//     .then((result) => {
+//       res.json(result);
+//     })
+//     .catch((error) => {
+//       res.status(500).json(error);
+//     });
+// });
 module.exports = router;

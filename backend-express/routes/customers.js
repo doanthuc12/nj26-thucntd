@@ -6,7 +6,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/thucntd");
 
 var express = require("express");
 var router = express.Router();
-const { findDocuments } = require("../helpers/MongoDbHelper");
 
 // GET
 router.get("/", function (req, res, next) {
@@ -48,7 +47,7 @@ router.post("/", function (req, res, next) {
     newItem
       .save()
       .then((result) => {
-        res.send(result);
+        res.status(201).send(result);
       })
       .catch((err) => {
         console.log(err);
@@ -98,58 +97,58 @@ router.delete("/:id", function (req, res, next) {
 // ------------------------------------------------------------------------------------------------
 // QUESTIONS 4
 // ------------------------------------------------------------------------------------------------
-router.get("/questions/4", function (req, res) {
-  const text = "Thanh Khe";
-  const query = { address: new RegExp(`${text}`) };
+// router.get("/questions/4", function (req, res) {
+//   const text = "Thanh Khe";
+//   const query = { address: new RegExp(`${text}`) };
 
-  findDocuments({ query }, "customers")
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((error) => {
-      res.status(500).json(error);
-    });
-});
+//   findDocuments({ query }, "customers")
+//     .then((result) => {
+//       res.json(result);
+//     })
+//     .catch((error) => {
+//       res.status(500).json(error);
+//     });
+// });
 
-// ------------------------------------------------------------------------------------------------
-// QUESTIONS 5
-// ------------------------------------------------------------------------------------------------
-router.get("/questions/5", function (req, res) {
-  const query = {
-    $expr: {
-      $eq: [{ $year: "$birthday" }, 1990],
-    },
-  };
+// // ------------------------------------------------------------------------------------------------
+// // QUESTIONS 5
+// // ------------------------------------------------------------------------------------------------
+// router.get("/questions/5", function (req, res) {
+//   const query = {
+//     $expr: {
+//       $eq: [{ $year: "$birthday" }, 1990],
+//     },
+//   };
 
-  findDocuments({ query }, "customers")
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((error) => {
-      res.status(500).json(error);
-    });
-});
+//   findDocuments({ query }, "customers")
+//     .then((result) => {
+//       res.json(result);
+//     })
+//     .catch((error) => {
+//       res.status(500).json(error);
+//     });
+// });
 
-// ------------------------------------------------------------------------------------------------
-// QUESTIONS 6
-// ------------------------------------------------------------------------------------------------
-router.get("/questions/6", function (req, res) {
-  const today = new Date();
-  const eqDay = { $eq: [{ $dayOfMonth: "$birthday" }, { $dayOfMonth: today }] };
-  const eqMonth = { $eq: [{ $month: "$birthday" }, { $month: today }] };
+// // ------------------------------------------------------------------------------------------------
+// // QUESTIONS 6
+// // ------------------------------------------------------------------------------------------------
+// router.get("/questions/6", function (req, res) {
+//   const today = new Date();
+//   const eqDay = { $eq: [{ $dayOfMonth: "$birthday" }, { $dayOfMonth: today }] };
+//   const eqMonth = { $eq: [{ $month: "$birthday" }, { $month: today }] };
 
-  const query = {
-    $expr: {
-      $and: [eqDay, eqMonth],
-    },
-  };
+//   const query = {
+//     $expr: {
+//       $and: [eqDay, eqMonth],
+//     },
+//   };
 
-  findDocuments({ query }, "customers")
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((error) => {
-      res.status(500).json(error);
-    });
-});
+//   findDocuments({ query }, "customers")
+//     .then((result) => {
+//       res.json(result);
+//     })
+//     .catch((error) => {
+//       res.status(500).json(error);
+//     });
+// });
 module.exports = router;

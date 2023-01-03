@@ -1,6 +1,12 @@
 import React from "react";
 import axios from "axios";
-import { Form, Input, Button, Modal, Space, Table } from "antd";
+import { Form, Input, Button, Modal, Space, Table, Popconfirm } from "antd";
+import {
+  DeleteOutlined,
+  ExitOutlined,
+  UploadOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 
 function CategoriesPage() {
   //Call API
@@ -44,8 +50,23 @@ function CategoriesPage() {
       render: (text, record, index) => {
         return (
           <Space>
-            <Button onClick={() => deleteCategories(record.id)}>Xoá</Button>
-            <Button onClick={() => selectCategories(record)}>Sửa</Button>
+            <Popconfirm
+              style={{ width: 1000 }}
+              title="Bạn muốn xoá danh mục hàng hoá này?"
+              description="Bạn muốn xoá danh mục hàng hoá này?"
+              okText="Đồng ý"
+              cancelText="Đóng"
+              onConfirm={() => {
+                deleteCategories(record._id);
+              }}
+            >
+              <Button danger type="dashed" icon={<DeleteOutlined />} />
+            </Popconfirm>
+            <Button
+              type="dashed"
+              icon={<EditOutlined />}
+              onClick={() => selectCategories(record)}
+            />
           </Space>
         );
       },
