@@ -14,6 +14,7 @@ router.get("/", function (req, res, next) {
       .populate("orderDetails.product")
       .populate("customer")
       .populate("employee")
+      .populate("product")
       .then((result) => {
         res.send(result);
       })
@@ -33,6 +34,7 @@ router.get("/:id", function (req, res, next) {
       .populate("orderDetails.product")
       .populate("customer")
       .populate("employee")
+      .populate("product")
       .then((result) => {
         res.send(result);
       })
@@ -101,60 +103,103 @@ router.delete("/:id", function (req, res, next) {
 });
 
 // ------------------------------------------------------------------------------------------------
-// QUESTIONS 4
+// QUESTIONS 7,9
 // ------------------------------------------------------------------------------------------------
-// router.get("/questions/4", function (req, res) {
-//   const text = "Thanh Khe";
-//   const query = { address: new RegExp(`${text}`) };
+router.get("/question/7", function (req, res) {
+  const text = "COMPLETED";
+  const query = { status: new RegExp(`${text}`) };
 
-//   findDocuments({ query }, "Orders")
-//     .then((result) => {
-//       res.json(result);
-//     })
-//     .catch((error) => {
-//       res.status(500).json(error);
-//     });
-// });
+  Order.find(query)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => {
+      res.status(500).json(error);
+    });
+});
 
-// // ------------------------------------------------------------------------------------------------
-// // QUESTIONS 5
-// // ------------------------------------------------------------------------------------------------
-// router.get("/questions/5", function (req, res) {
-//   const query = {
-//     $expr: {
-//       $eq: [{ $year: "$birthday" }, 1990],
-//     },
-//   };
+// ------------------------------------------------------------------------------------------------
+// QUESTIONS 8,10
+// ------------------------------------------------------------------------------------------------
+router.get("/question/8", function (req, res) {
+  const text = "COMPLETED";
+  const eqStatus = { status: new RegExp(`${text}`) };
+  const today = new Date();
+  const eqDay = {
+    $eq: [{ $dayOfMonth: "$createdDate" }, { $dayOfMonth: today }],
+  };
+  const query = {
+    $expr: {
+      $and: [eqStatus, eqDay],
+    },
+  };
 
-//   findDocuments({ query }, "Orders")
-//     .then((result) => {
-//       res.json(result);
-//     })
-//     .catch((error) => {
-//       res.status(500).json(error);
-//     });
-// });
+  Order.find(query)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => {
+      res.status(500).json(error);
+    });
+});
 
-// // ------------------------------------------------------------------------------------------------
-// // QUESTIONS 6
-// // ------------------------------------------------------------------------------------------------
-// router.get("/questions/6", function (req, res) {
-//   const today = new Date();
-//   const eqDay = { $eq: [{ $dayOfMonth: "$birthday" }, { $dayOfMonth: today }] };
-//   const eqMonth = { $eq: [{ $month: "$birthday" }, { $month: today }] };
+// ------------------------------------------------------------------------------------------------
+// QUESTIONS 8b
+// ------------------------------------------------------------------------------------------------
+router.get("/question/8b", function (req, res) {
+  const text = "COMPLETED";
+  const eqStatus = { status: new RegExp(`${text}`) };
+  const today = new Date();
+  const eqCreatedDay = {
+    $eq: [{ $dayOfMonth: "$createdDate" }, { $dayOfMonth: today }],
+  };
+  const eqShippedDay = {
+    $eq: [{ $dayOfMonth: "$shippedDate" }, { $dayOfMonth: today }],
+  };
+  const query = {
+    $expr: {
+      $and: [eqStatus, eqCreatedDay, eqShippedDay],
+    },
+  };
 
-//   const query = {
-//     $expr: {
-//       $and: [eqDay, eqMonth],
-//     },
-//   };
+  Order.find(query)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => {
+      res.status(500).json(error);
+    });
+});
 
-//   findDocuments({ query }, "Orders")
-//     .then((result) => {
-//       res.json(result);
-//     })
-//     .catch((error) => {
-//       res.status(500).json(error);
-//     });
-// });
+// ------------------------------------------------------------------------------------------------
+// QUESTIONS 11,12
+// ------------------------------------------------------------------------------------------------
+router.get("/question/11", function (req, res) {
+  const text = "CASH";
+  const query = { paymentType: new RegExp(`${text}`) };
+
+  Order.find(query)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => {
+      res.status(500).json(error);
+    });
+});
+
+// ------------------------------------------------------------------------------------------------
+// QUESTIONS 13
+// ------------------------------------------------------------------------------------------------
+router.get("/question/13", function (req, res) {
+  const text = "Hà Nội";
+  const query = { shippingAddress: new RegExp(`${text}`) };
+
+  Order.find(query)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => {
+      res.status(500).json(error);
+    });
+});
 module.exports = router;

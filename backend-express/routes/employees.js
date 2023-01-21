@@ -95,60 +95,25 @@ router.delete("/:id", function (req, res, next) {
 });
 
 // ------------------------------------------------------------------------------------------------
-// QUESTIONS 4
+// QUESTIONS 14
 // ------------------------------------------------------------------------------------------------
-// router.get("/questions/4", function (req, res) {
-//   const text = "Thanh Khe";
-//   const query = { address: new RegExp(`${text}`) };
+router.get("/question/14", function (req, res) {
+  const today = new Date();
+  const eqDay = { $eq: [{ $dayOfMonth: "$birthday" }, { $dayOfMonth: today }] };
+  const eqMonth = { $eq: [{ $month: "$birthday" }, { $month: today }] };
 
-//   findDocuments({ query }, "Employees")
-//     .then((result) => {
-//       res.json(result);
-//     })
-//     .catch((error) => {
-//       res.status(500).json(error);
-//     });
-// });
+  const query = {
+    $expr: {
+      $and: [eqDay, eqMonth],
+    },
+  };
+  Employee.find(query)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((error) => {
+      res.status(500).json(error);
+    });
+});
 
-// // ------------------------------------------------------------------------------------------------
-// // QUESTIONS 5
-// // ------------------------------------------------------------------------------------------------
-// router.get("/questions/5", function (req, res) {
-//   const query = {
-//     $expr: {
-//       $eq: [{ $year: "$birthday" }, 1990],
-//     },
-//   };
-
-//   findDocuments({ query }, "Employees")
-//     .then((result) => {
-//       res.json(result);
-//     })
-//     .catch((error) => {
-//       res.status(500).json(error);
-//     });
-// });
-
-// // ------------------------------------------------------------------------------------------------
-// // QUESTIONS 6
-// // ------------------------------------------------------------------------------------------------
-// router.get("/questions/6", function (req, res) {
-//   const today = new Date();
-//   const eqDay = { $eq: [{ $dayOfMonth: "$birthday" }, { $dayOfMonth: today }] };
-//   const eqMonth = { $eq: [{ $month: "$birthday" }, { $month: today }] };
-
-//   const query = {
-//     $expr: {
-//       $and: [eqDay, eqMonth],
-//     },
-//   };
-
-//   findDocuments({ query }, "Employees")
-//     .then((result) => {
-//       res.json(result);
-//     })
-//     .catch((error) => {
-//       res.status(500).json(error);
-//     });
-// });
 module.exports = router;

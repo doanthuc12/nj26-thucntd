@@ -98,11 +98,11 @@ router.delete("/:id", function (req, res, next) {
 });
 
 // ------------------------------------------------------------------------------------------------
-// QUESTIONS 1
+// QUESTION 1
 // ------------------------------------------------------------------------------------------------
 router.get("/question/1", function (req, res, next) {
   try {
-    let query = { discount: { $gte: 15 } };
+    let query = { discount: { $lte: 10 } };
     Product.find(query)
       .populate("category")
       .populate("supplier")
@@ -118,60 +118,46 @@ router.get("/question/1", function (req, res, next) {
 });
 
 // ------------------------------------------------------------------------------------------------
-// QUESTIONS 4
+// QUESTION 2
 // ------------------------------------------------------------------------------------------------
-// router.get("/questions/4", function (req, res) {
-//   const text = "Thanh Khe";
-//   const query = { address: new RegExp(`${text}`) };
+router.get("/question/2", function (req, res, next) {
+  try {
+    let query = { stock: { $lte: 5 } };
+    Product.find(query)
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
 
-//   findDocuments({ query }, "products")
-//     .then((result) => {
-//       res.json(result);
-//     })
-//     .catch((error) => {
-//       res.status(500).json(error);
-//     });
-// });
+// ------------------------------------------------------------------------------------------------
+// QUESTION 3
+// ------------------------------------------------------------------------------------------------
+router.get("/question/3", function (req, res, next) {
+  try {
+    // total = price * (100 - discount) /100
 
-// // ------------------------------------------------------------------------------------------------
-// // QUESTIONS 5
-// // ------------------------------------------------------------------------------------------------
-// router.get("/questions/5", function (req, res) {
-//   const query = {
-//     $expr: {
-//       $eq: [{ $year: "$birthday" }, 1990],
-//     },
-//   };
+    const s = { $subtract: [100, "$discount"] };
+    const m = { $multiply: ["$price", s] };
+    const d = { $divide: [m, 100] };
 
-//   findDocuments({ query }, "products")
-//     .then((result) => {
-//       res.json(result);
-//     })
-//     .catch((error) => {
-//       res.status(500).json(error);
-//     });
-// });
+    let aggregate = [{ $match: { $expr: { $lte: [d, 200000] } } }];
 
-// // ------------------------------------------------------------------------------------------------
-// // QUESTIONS 6
-// // ------------------------------------------------------------------------------------------------
-// router.get("/questions/6", function (req, res) {
-//   const today = new Date();
-//   const eqDay = { $eq: [{ $dayOfMonth: "$birthday" }, { $dayOfMonth: today }] };
-//   const eqMonth = { $eq: [{ $month: "$birthday" }, { $month: today }] };
+    Product.aggregate(aggregate)
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).send({ message: err.message });
+      });
+  } catch (err) {
+    res.sendStatus(500);
+  }
+});
 
-//   const query = {
-//     $expr: {
-//       $and: [eqDay, eqMonth],
-//     },
-//   };
-
-//   findDocuments({ query }, "products")
-//     .then((result) => {
-//       res.json(result);
-//     })
-//     .catch((error) => {
-//       res.status(500).json(error);
-//     });
-// });
 module.exports = router;

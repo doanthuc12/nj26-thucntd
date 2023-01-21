@@ -5,12 +5,14 @@ const { Category } = require("../models");
 mongoose.connect("mongodb://127.0.0.1:27017/thucntd");
 
 var express = require("express");
+const { populate } = require("../models/Employee");
 var router = express.Router();
 
 // GET
 router.get("/", function (req, res, next) {
   try {
     Category.find()
+      // .populate("product")
       .then((result) => {
         res.send(result);
       })
@@ -27,6 +29,7 @@ router.get("/:id", function (req, res, next) {
   try {
     const { id } = req.params;
     Category.findById(id)
+      // .populate("product")
       .then((result) => {
         res.send(result);
       })
