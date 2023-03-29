@@ -1,4 +1,5 @@
 const { default: mongoose } = require("mongoose");
+const yup = require("yup");
 
 const { Product } = require("../models");
 // MONGOOSE
@@ -100,9 +101,19 @@ router.delete("/:id", function (req, res, next) {
 // ------------------------------------------------------------------------------------------------
 // QUESTION 1
 // ------------------------------------------------------------------------------------------------
+//http://localhost:9000/products/question/1?discount=10
+
+const question1Schema = yup.object({
+  query: yup.object({
+    discount: yup.number().integer().min(0).max(100).required(),
+  }),
+  // params: yup.object({}),
+});
+
 router.get("/question/1", function (req, res, next) {
   try {
-    let query = { discount: { $lte: 10 } };
+    let discount = req.query.discount;
+    let query = { discount: { $lte: discount } };
     Product.find(query)
       .populate("category")
       .populate("supplier")
@@ -120,9 +131,11 @@ router.get("/question/1", function (req, res, next) {
 // ------------------------------------------------------------------------------------------------
 // QUESTION 2
 // ------------------------------------------------------------------------------------------------
+//http://localhost:9000/products/question/2?stock=
 router.get("/question/2", function (req, res, next) {
   try {
-    let query = { stock: { $lte: 5 } };
+    let stock = req.query.stock;
+    let query = { stock: { $lte: stock } };
     Product.find(query)
       .then((result) => {
         res.send(result);
@@ -146,7 +159,11 @@ router.get("/question/3", function (req, res, next) {
     const m = { $multiply: ["$price", s] };
     const d = { $divide: [m, 100] };
 
-    let aggregate = [{ $match: { $expr: { $lte: [d, 200000] } } }];
+    const price = req.query.price;
+
+    let aggregate = [{ $match: { $expr: { $lte: [d, price] } } }];
+
+    // let aggregate = [{ $match: { $expr: { $lte: [d, price] } } }];
 
     Product.aggregate(aggregate)
       .then((result) => {
@@ -157,6 +174,50 @@ router.get("/question/3", function (req, res, next) {
       });
   } catch (err) {
     res.sendStatus(500);
+  }
+});
+
+// ------------------------------------------------------------------------------------------------
+// QUESTIONS 25
+// ------------------------------------------------------------------------------------------------
+router.get("/question/25", async (req, res, next) => {
+  try {
+    const aggregate = [
+      {
+        $unwind: {
+          path: "$orderDetails",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      { $addFields: { productId: "$orderDetails.productId" } },
+      { $project: { productId: 1 } },
+      {
+        $group: {
+          _id: null,
+          productIds: { $addToSet: "$productId" }, // Tạo mảng đã mua
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          let: { productIds: "$productIds" },
+          pipeline: [
+            { $match: { $expr: { $not: { $in: ["$_id", "$$productIds"] } } } },
+          ],
+          as: "productsNotInOrderDetails",
+        },
+      },
+      { $project: { productsNotInOrderDetails: 1, _id: 0 } },
+    ];
+    Order.aggregate(aggregate)
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  } catch (error) {
+    res.status(500).json(error);
   }
 });
 

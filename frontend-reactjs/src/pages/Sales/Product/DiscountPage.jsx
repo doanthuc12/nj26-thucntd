@@ -77,7 +77,7 @@ export default function DiscountPage() {
       },
     },
     {
-      title: "Giảm",
+      title: "Giảm giá",
       dataIndex: "discount",
       key: "discount",
       width: "1%",
@@ -90,7 +90,7 @@ export default function DiscountPage() {
       },
     },
     {
-      title: "Tồn",
+      title: "Tồn kho",
       dataIndex: "stock",
       key: "stock",
       width: "1%",
@@ -136,7 +136,7 @@ export default function DiscountPage() {
       >
         {/* FIRST NAME */}
         <Form.Item
-          label="Nhập mức giảm giá"
+          label="Giới hạn mức giảm giá"
           name="discount"
           rules={[
             {

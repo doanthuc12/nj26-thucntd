@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import moment from "moment";
 import { Form, Input, Button, Modal, Space, Table, Popconfirm } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
@@ -57,12 +58,12 @@ function CustomerPage() {
       key: "email",
     },
     {
-      title: "Ngày sinh (yyyy/mm/dd)",
+      title: "Ngày sinh",
       key: "birthday",
       render: (text, record, index) => {
         return (
           <div>
-            <span>{record.birthday}</span>
+            <span>{moment(text).format("MMMM Do YYYY")}</span>
           </div>
         );
       },

@@ -15,6 +15,10 @@ var customersRouter = require("./routes/customers");
 var employeesRouter = require("./routes/employees");
 var ordersRouter = require("./routes/orders");
 
+var mwRouter = require("./routes/mw");
+
+var authRouter = require("./routes/auth");
+
 var app = express();
 
 // view engine setup
@@ -34,6 +38,13 @@ app.use(
   })
 );
 
+const myLogger = function (req, res, next) {
+  console.log("LOGGED");
+  next();
+};
+
+app.use(myLogger);
+
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/categories", categoriesRouter);
@@ -42,6 +53,10 @@ app.use("/suppliers", suppliersRouter);
 app.use("/customers", customersRouter);
 app.use("/employees", employeesRouter);
 app.use("/orders", ordersRouter);
+
+app.use("/mw", mwRouter);
+
+app.use("/auth", authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

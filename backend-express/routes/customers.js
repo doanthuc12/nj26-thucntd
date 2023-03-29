@@ -112,14 +112,33 @@ router.get("/question/4", function (req, res) {
       res.status(500).json(error);
     });
 });
+// QUESTION 2
+// ------------------------------------------------------------------------------------------------
+//http://localhost:9000/products/question/2?stock=
+// router.get("/question/2", function (req, res, next) {
+//   try {
+//     let stock = req.query.stock;
+//     let query = { stock: { $lte: stock } };
+//     Product.find(query)
+//       .then((result) => {
+//         res.send(result);
+//       })
+//       .catch((err) => {
+//         res.status(400).send({ message: err.message });
+//       });
+//   } catch (err) {
+//     res.sendStatus(500);
+//   }
+// });
 
 // ------------------------------------------------------------------------------------------------
 // QUESTIONS 5
 // ------------------------------------------------------------------------------------------------
 router.get("/question/5", function (req, res) {
+  let year = req.query.year;
   const query = {
     $expr: {
-      $eq: [{ $year: "$birthday" }, 2004],
+      $eq: [{ $year: "$birthday" }, year],
     },
   };
 

@@ -3,7 +3,7 @@ import axios from "axios";
 import numeral from "numeral";
 import React from "react";
 
-export default function StockPage() {
+export default function TotalPricePage() {
   const [products, setProducts] = React.useState([]);
   // Columns of Antd Table
   const columns = [
@@ -77,7 +77,7 @@ export default function StockPage() {
       },
     },
     {
-      title: "Giảm",
+      title: "Giảm giá",
       dataIndex: "discount",
       key: "discount",
       width: "1%",
@@ -90,7 +90,7 @@ export default function StockPage() {
       },
     },
     {
-      title: "Tồn",
+      title: "Tồn kho",
       dataIndex: "stock",
       key: "stock",
       width: "1%",
@@ -107,11 +107,11 @@ export default function StockPage() {
   const [searchForm] = Form.useForm();
   const onFinish = (values) => {
     console.log(values);
-    let { stock } = values;
+    let { price } = values;
 
     // CALL API TO CREATE CUSTOMER
     axios
-      .get("http://localhost:9000/products/question/2?stock=" + stock, values)
+      .get("http://localhost:9000/products/question/3?price=" + price, values)
       .then((response) => {
         console.log(response.data);
         setProducts(response.data);
@@ -133,12 +133,12 @@ export default function StockPage() {
       >
         {/* FIRST NAME */}
         <Form.Item
-          label="Nhập tồn kho tối thiểu"
-          name="stock"
+          label="Giới hạn mức giá sau giảm"
+          name="discount"
           rules={[
             {
               required: true,
-              message: "Please input stock!",
+              message: "Please input price!",
             },
           ]}
         >
