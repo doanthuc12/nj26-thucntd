@@ -16,19 +16,23 @@ export default function SignIn({ onLogin }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await fetch("http://localhost:9000/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-    if (response.ok) {
-      console.log("success");
-      // Redirect to homepage here
-      window.location.href = "/home";
-    } else {
-      console.log("Login failed");
+    try {
+      const response = await fetch("http://localhost:9000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      if (response.ok) {
+        console.log("success");
+        // Redirect to homepage here
+        window.location.href = "/home";
+      } else {
+        console.log("Login failed");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 

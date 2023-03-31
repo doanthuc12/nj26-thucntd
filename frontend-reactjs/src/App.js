@@ -16,17 +16,18 @@ import OrdersPage from "./pages/Sales/Product/OrdersPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import DiscountPage from "./pages/Sales/Product/DiscountPage";
 import StockPage from "./pages/Sales/Product/StockPage";
-// import TotalPricePage from "./pages/Sales/Product/TotalPricePage";
 import CustomerAddressPage from "./pages/Management/CustomerAddressPage";
 import CustomerBirthPage from "./pages/Management/CustomerBirthPage";
 
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Sider, Content } = Layout;
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const navigate = useNavigate();
 
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
+    // navigate("/home");
   };
 
   return (
